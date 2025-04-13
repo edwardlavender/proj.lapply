@@ -8,7 +8,7 @@ Authors@R:
            comment = c(ORCID = "0000-0002-8040-7489"))
 Description: Scientific project development and management. 
 License: MIT + file LICENSE
-Imports: pbapply, proj.build, qs, rlang
+Imports: data.table, pbapply, proj.build, qs, rlang
 Suggests:
     terra, testthat (>= 3.0.0)
 Remotes:

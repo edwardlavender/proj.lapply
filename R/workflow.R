@@ -1,20 +1,20 @@
 #' @title Workflows
 #' @description This internal function is the workhorse of [`cl_lapply_workflow()`]. The function wraps an `algorithm` function.
-#' @param sim,datasets,constructor,algorithm,coffee Arguments directly inherited from [`cl_lapply_workflow()`].
+#' @param sim,datasets,constructor,algorithm,write,coffee Arguments directly inherited from [`cl_lapply_workflow()`].
 #' @param verbose A `logical` variable that defines whether or not to send user outputs to the console or a `.txt` file. 
 #' @details For details, see the wrapper function [`cl_lapply_workflow()`].
 #' @author Edward Lavender
 #' @name workflow
 #' @keywords internal
 
-workflow <- function(sim, datasets, constructor, algorithm, coffee, verbose) {
+workflow <- function(sim, datasets, constructor, ..., algorithm, write, coffee, verbose) {
   
   # Initialise
   coffee_do(coffee)
   cat_next(.index = sim$index, .verbose = verbose)
   
   # Define algorithm inputs
-  args     <- constructor(sim = sim, datasets = datasets, verbose = verbose)
+  args     <- constructor(sim = sim, datasets = datasets, verbose = verbose, ...)
   
   # Run algorithm
   error   <- NA_character_
@@ -44,14 +44,12 @@ workflow <- function(sim, datasets, constructor, algorithm, coffee, verbose) {
                      time      = time)
   
   # (optional) Write outputs
-  write <- rlang::has_name(sim, "folder_output")
-  if (write) {
-    pfile <- "output.qs"
-    dfile <- "callstats.qs"
+  do_write <- rlang::has_name(sim, "file_output")
+  if (do_write) {
     if (success) {
-      qs::qsave(pout, file.path(sim$folder_output, pfile))
+      write(pout, sim$file_output)
     }
-    qs::qsave(dout, file.path(sim$folder_output, dfile))
+    qs::qsave(dout, file.path(dirname(sim$file_output), "callstats.qs"))
     return(nothing())
   } else {
     return(list(output = pout, callstats = dout))

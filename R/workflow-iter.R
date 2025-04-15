@@ -6,10 +6,11 @@
 #'    - `index`: a unique identifier for each row;
 #'    - `unit_id`:  a unique identifier for each unit (e.g., individual/time block);
 #'    -  run-specific parameters;
-#'    - `folder_output` (optional): a `character` path to a folder in which to write outputs;
+#'    - `file_output` (optional): a `character` path to an output file;
 #' @param datasets (optional) A named `list` of datasets, passed to `constructor()`. 
-#' @param constructor A `constructor` `function` that constructs a named `list` of arguments for the `algorithm` function, given the `iteration` row, `datasets` and `verbose`.
+#' @param constructor,... A `constructor` `function` that constructs a named `list` of arguments for the `algorithm` function, given the `iteration` row, `datasets` and `verbose`. Additional arguments in `...` are passed to `constructor`.
 #' @param algorithm A `function` applied to each row of `iteration`, via [`workflow`].
+#' @param write A `function` used to create `iteration$file_output`, if specified. This defaults to [`qs::qsave()`]. For pointers (e.g., [`terra::SpatRaster`]s), use specialised methods (e.g., [`terra::writeRaster()`]).
 #' @param coffee [`coffee()`] break options. 
 #' * Use `NULL` to suppress coffee breaks;
 #' * Use `list()` for default arguments;
@@ -40,9 +41,9 @@
 #'        * `ntrial`: An `integer` that defines the number of trials, if relevant; 
 #'        * `time`: A `double` that defines the time (s) of the `algorithm` run;
 #'        
-#' * If `iteration` contains a `folder_output` column, [`workflow()`] returns `invisible(NULL)`. Outputs are instead written to file (reducing memory demand), as:
-#'    * `file.path(folder_output, "output.qs")`
-#'    * `file.path(folder_output, "callstats.qs")`
+#' * If `iteration` contains a `file_output` column, [`workflow()`] returns `invisible(NULL)`. Outputs are instead written to file (reducing memory demand), as:
+#'    * `file_output`
+#'    * `file.path(dirname(file_output), "callstats.qs")`
 #'
 #' @author Edward Lavender
 #' @name cl_lapply_workflow
@@ -52,11 +53,11 @@
 
 cl_lapply_workflow <- function(iteration,
                                datasets, 
-                               constructor,
-                               algorithm,  
+                               constructor, ...,
+                               algorithm, 
+                               write = qs::qsave,
                                coffee = NULL,
-                               verbose = TRUE
-) {
+                               verbose = TRUE) {
   
   #### User output control
   # A. Open a sink for use with cat() in downstream functions (convenient)
@@ -80,9 +81,9 @@ cl_lapply_workflow <- function(iteration,
     iteration[, index := 1:.N]
   }
   # Validate columns
-  if (rlang::has_name(iteration, "folder_output")) {
-    if (!all(dir.exists(iteration$folder_output))) {
-      abort("All `iteration$folder_output` directories should exist.")
+  if (rlang::has_name(iteration, "file_output")) {
+    if (!all(dir.exists(dirname(iteration$file_output)))) {
+      abort("All `dirname(iteration$file_output)` directories should exist.")
     }
   }
   
@@ -93,8 +94,9 @@ cl_lapply_workflow <- function(iteration,
   out <- cl_lapply(iteration_ls, function(sim) {
     workflow(sim         = sim, 
              datasets    = datasets, 
-             constructor = constructor, 
+             constructor = constructor, ..., 
              algorithm   = algorithm, 
+             write       = write,
              coffee      = coffee,
              verbose     = verbose)
   })

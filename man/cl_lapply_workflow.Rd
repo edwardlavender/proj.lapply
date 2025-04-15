@@ -8,7 +8,9 @@ cl_lapply_workflow(
   iteration,
   datasets,
   constructor,
+  ...,
   algorithm,
+  write = qs::qsave,
   coffee = NULL,
   verbose = TRUE
 )
@@ -22,15 +24,17 @@ cl_lapply_workflow(
 \item \code{index}: a unique identifier for each row;
 \item \code{unit_id}:  a unique identifier for each unit (e.g., individual/time block);
 \item run-specific parameters;
-\item \code{folder_output} (optional): a \code{character} path to a folder in which to write outputs;
+\item \code{file_output} (optional): a \code{character} path to an output file;
 }
 }}
 
 \item{datasets}{(optional) A named \code{list} of datasets, passed to \code{constructor()}.}
 
-\item{constructor}{A \code{constructor} \code{function} that constructs a named \code{list} of arguments for the \code{algorithm} function, given the \code{iteration} row, \code{datasets} and \code{verbose}.}
+\item{constructor, ...}{A \code{constructor} \code{function} that constructs a named \code{list} of arguments for the \code{algorithm} function, given the \code{iteration} row, \code{datasets} and \code{verbose}. Additional arguments in \code{...} are passed to \code{constructor}.}
 
 \item{algorithm}{A \code{function} applied to each row of \code{iteration}, via \code{\link{workflow}}.}
+
+\item{write}{A \code{function} used to create \code{iteration$file_output}, if specified. This defaults to \code{\link[qs:qsave]{qs::qsave()}}. For pointers (e.g., \code{\link[terra:SpatRaster-class]{terra::SpatRaster}}s), use specialised methods (e.g., \code{\link[terra:writeRaster]{terra::writeRaster()}}).}
 
 \item{coffee}{\code{\link[=coffee]{coffee()}} break options.
 \itemize{
@@ -62,15 +66,15 @@ The function returns a \code{list}, with one element for each \code{iteration} r
 \item \code{time}: A \code{double} that defines the time (s) of the \code{algorithm} run;
 }
 }
-\item If \code{iteration} contains a \code{folder_output} column, \code{\link[=workflow]{workflow()}} returns \code{invisible(NULL)}. Outputs are instead written to file (reducing memory demand), as:
+\item If \code{iteration} contains a \code{file_output} column, \code{\link[=workflow]{workflow()}} returns \code{invisible(NULL)}. Outputs are instead written to file (reducing memory demand), as:
 \itemize{
-\item \code{file.path(folder_output, "output.qs")}
-\item \code{file.path(folder_output, "callstats.qs")}
+\item \code{file_output}
+\item \code{file.path(dirname(file_output), "callstats.qs")}
 }
 }
 }
 \description{
-This function iteratively implemented a \code{\link{workflow}} based on a user-defined algorithm function.
+This function iteratively implements a \code{\link{workflow}} based on a user-defined algorithm function.
 }
 \details{
 \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}} iterates over rows in \code{iteration} via \code{\link[=cl_lapply]{cl_lapply()}} and applies the internal function \code{\link[=workflow]{workflow()}}. \code{\link[=workflow]{workflow()}} accepts the \code{iteration} row, \code{datasets}, \code{constructor}, \code{algorithm} and \code{verbose} arguments. Using these inputs, \code{\link[=workflow]{workflow()}}:

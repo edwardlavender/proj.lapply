@@ -78,7 +78,7 @@ coffee_cleanup <- function(args) {
     if (rlang::has_name(args, "folder")) {
       coffeehouse <- args$folder
     } else {
-      coffeehouse <- formals(args)$folder
+      coffeehouse <- formals("coffee")$folder
     }
     unlink(coffeehouse)
   }

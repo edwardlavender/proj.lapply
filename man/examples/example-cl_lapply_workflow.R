@@ -1,3 +1,5 @@
+library(data.table)
+
 # Define algorithm function
 # * This function expects a SpatRaster and runs a complicated routine 
 algorithm <- function(x) {

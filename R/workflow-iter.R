@@ -48,7 +48,7 @@
 #'    * `file_output`
 #'    * `file.path(dirname(file_output), "callstats.qs")`
 #'
-#' @example man/examples-example-cl_lapply_workflow.R
+#' @example man/examples/example-cl_lapply_workflow.R
 #' @author Edward Lavender
 #' @name cl_lapply_workflow
 

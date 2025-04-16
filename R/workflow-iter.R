@@ -96,11 +96,11 @@ cl_lapply_workflow <- function(.iteration,
   #### Iteratively implement a workflow
   iteration_ls <- split(.iteration, seq_len(nrow(.iteration)))
   out <- cl_lapply(.x = iteration_ls, 
-                   .fun = function(sim, .chunkargs = NULL) {
-                     if (any(length(.datasets) > 0L, length(.chunkargs) > 0L)) {
+                   .fun = function(.sim, .chunkargs = NULL) {
+                     if (any(length(.datasets) > 0L & !is.null(.chunkargs))) {
                        .datasets <- list_merge(.datasets, .chunkargs)
                      }
-                     workflow(sim         = sim, 
+                     workflow(.sim         = .sim, 
                               .datasets    = .datasets, 
                               .constructor = .constructor, ..., 
                               .algorithm   = .algorithm, 

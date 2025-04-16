@@ -15,7 +15,10 @@
 #' * Use `NULL` to suppress coffee breaks;
 #' * Use `list()` for default arguments;
 #' * Use a named `list` of arguments, passed to [`coffee()`], to customise coffee breaks;
-#' 
+#' @param cl,varlist,envir,chunk,chunk_fun Cluster arguments passed to [`cl_lapply()`]. If `chunk_fun` is used:
+#' * `chunk_fun` should return a named `list`;
+#' * The outputs of `chunk_fun` are added as named elements to `datasets`;
+#' * The `constructor` uses `datasets`, plus `sim`, `...` and `verbose`, to return a named `list` that is evaluated via `algorithm`;
 #' @param verbose A `logical` variable or a `string` that defines the path to a text file:
 #' * `.verbose = FALSE` suppresses user outputs;
 #' * `.verbose = TRUE` sends user outputs to the console;
@@ -45,6 +48,7 @@
 #'    * `file_output`
 #'    * `file.path(dirname(file_output), "callstats.qs")`
 #'
+#' @example man/examples-example-cl_lapply_workflow.R
 #' @author Edward Lavender
 #' @name cl_lapply_workflow
 
@@ -57,6 +61,8 @@ cl_lapply_workflow <- function(iteration,
                                algorithm, 
                                write = qs::qsave,
                                coffee = NULL,
+                               cl = NULL, varlist = NULL, envir = .GlobalEnv,
+                               chunk = FALSE, chunk_fun = NULL,
                                verbose = TRUE) {
   
   #### User output control
@@ -91,15 +97,21 @@ cl_lapply_workflow <- function(iteration,
   # TO DO
   # Implement parallelisation & chunkargs
   iteration_ls <- split(iteration, seq_len(nrow(iteration)))
-  out <- cl_lapply(iteration_ls, function(sim) {
-    workflow(sim         = sim, 
-             datasets    = datasets, 
-             constructor = constructor, ..., 
-             algorithm   = algorithm, 
-             write       = write,
-             coffee      = coffee,
-             verbose     = verbose)
-  })
+  out <- cl_lapply(.x = iteration_ls, 
+                   .fun = function(sim, .chunkargs = NULL) {
+                     if (any(length(datasets) > 0L, length(.chunkargs) > 0L)) {
+                       datasets <- list_merge(datasets, .chunkargs)
+                     }
+                     workflow(sim         = sim, 
+                              datasets    = datasets, 
+                              constructor = constructor, ..., 
+                              algorithm   = algorithm, 
+                              write       = write,
+                              coffee      = coffee,
+                              verbose     = verbose)
+                   }, 
+                   .cl = cl, .varlist = varlist, .envir = envir, 
+                   .chunk = chunk, .chunk_fun = chunk_fun)
   
   #### Clean up coffeehouse
   coffee_cleanup(coffee)

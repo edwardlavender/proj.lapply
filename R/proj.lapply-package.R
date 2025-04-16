@@ -5,6 +5,7 @@
 #' @importFrom proj.build abort
 #' @importFrom proj.build cat_next
 #' @importFrom proj.build cat_setup
+#' @importFrom proj.build list_merge
 #' @importFrom proj.build msg
 #' @importFrom proj.build nothing
 #' @importFrom proj.build secs

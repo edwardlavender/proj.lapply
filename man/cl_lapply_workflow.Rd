@@ -12,6 +12,11 @@ cl_lapply_workflow(
   algorithm,
   write = qs::qsave,
   coffee = NULL,
+  cl = NULL,
+  varlist = NULL,
+  envir = .GlobalEnv,
+  chunk = FALSE,
+  chunk_fun = NULL,
   verbose = TRUE
 )
 }
@@ -41,6 +46,13 @@ cl_lapply_workflow(
 \item Use \code{NULL} to suppress coffee breaks;
 \item Use \code{list()} for default arguments;
 \item Use a named \code{list} of arguments, passed to \code{\link[=coffee]{coffee()}}, to customise coffee breaks;
+}}
+
+\item{cl, varlist, envir, chunk, chunk_fun}{Cluster arguments passed to \code{\link[=cl_lapply]{cl_lapply()}}. If \code{chunk_fun} is used:
+\itemize{
+\item \code{chunk_fun} should return a named \code{list};
+\item The outputs of \code{chunk_fun} are added as named elements to \code{datasets};
+\item The \code{constructor} uses \code{datasets}, plus \code{sim}, \code{...} and \code{verbose}, to return a named \code{list} that is evaluated via \code{algorithm};
 }}
 
 \item{verbose}{A \code{logical} variable or a \code{string} that defines the path to a text file:

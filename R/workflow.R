@@ -11,7 +11,7 @@ workflow <- function(.sim, .datasets, .constructor, ...,
                      .algorithm, .write, .coffee, .verbose) {
   
   # Initialise
-  coffee_do(coffee)
+  coffee_do(.coffee)
   cat_next(.index = .sim$index, .verbose = .verbose)
   
   # Define algorithm inputs

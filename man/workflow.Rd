@@ -4,12 +4,21 @@
 \alias{workflow}
 \title{Workflows}
 \usage{
-workflow(sim, datasets, constructor, ..., algorithm, write, coffee, verbose)
+workflow(
+  .sim,
+  .datasets,
+  .constructor,
+  ...,
+  .algorithm,
+  .write,
+  .coffee,
+  .verbose
+)
 }
 \arguments{
-\item{sim, datasets, constructor, algorithm, write, coffee}{Arguments directly inherited from \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}}.}
+\item{.sim, .datasets, .constructor, .algorithm, .write, .coffee}{Arguments directly inherited from \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}}. \code{sim} is the \code{iteration} \code{\link{data.table}} row.}
 
-\item{verbose}{A \code{logical} variable that defines whether or not to send user outputs to the console or a \code{.txt} file.}
+\item{.verbose}{A \code{logical} variable that defines whether or not to send user outputs to the console or a \code{.txt} file.}
 }
 \description{
 This internal function is the workhorse of \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}}. The function wraps an \code{algorithm} function.

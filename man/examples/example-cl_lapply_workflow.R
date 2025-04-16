@@ -33,13 +33,13 @@ w <-
 # * Unwrap the SpatRaster on each chunk
 # * Is it incorporated into datasets
 cl_lapply_workflow(iteration, 
-                   datasets = list(), 
-                   constructor = constructor, 
-                   algorithm = algorithm, 
-                   chunk_fun = function(xi, ...) {
+                   .datasets = list(), 
+                   .constructor = constructor, 
+                   .algorithm = algorithm, 
+                   .chunk_fun = function(xi, ...) {
                      # Return a named list
                      list(x = terra::unwrap(w))
                    }, 
-                   chunk = TRUE, cl = 2L)
+                   .chunk = TRUE, .cl = 2L)
 
 # For extensive examples, see the patter.workflows package. 

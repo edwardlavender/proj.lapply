@@ -5,26 +5,26 @@
 \title{Iterative workflows}
 \usage{
 cl_lapply_workflow(
-  iteration,
-  datasets,
-  constructor,
+  .iteration,
+  .datasets,
+  .constructor,
   ...,
-  algorithm,
-  write = qs::qsave,
-  coffee = NULL,
-  cl = NULL,
-  varlist = NULL,
-  envir = .GlobalEnv,
-  chunk = FALSE,
-  chunk_fun = NULL,
-  verbose = TRUE
+  .algorithm,
+  .write = qs::qsave,
+  .coffee = NULL,
+  .cl = NULL,
+  .varlist = NULL,
+  .envir = .GlobalEnv,
+  .chunk = FALSE,
+  .chunk_fun = NULL,
+  .verbose = TRUE
 )
 }
 \arguments{
-\item{iteration}{An iteration \code{\link{data.table}}.
+\item{.iteration}{An .iteration \code{\link{data.table}}.
 \itemize{
-\item Each row corresponds to one algorithm run and is passed to \code{constructor()}.
-\item Required columns depend on the \code{constructor()} function but generally include:
+\item Each row corresponds to one .algorithm run and is passed to \code{.constructor()}.
+\item Required columns depend on the \code{.constructor()} function but generally include:
 \itemize{
 \item \code{index}: a unique identifier for each row;
 \item \code{unit_id}:  a unique identifier for each unit (e.g., individual/time block);
@@ -33,52 +33,52 @@ cl_lapply_workflow(
 }
 }}
 
-\item{datasets}{(optional) A named \code{list} of datasets, passed to \code{constructor()}.}
+\item{.datasets}{(optional) A named \code{list} of .datasets, passed to \code{.constructor()}.}
 
-\item{constructor, ...}{A \code{constructor} \code{function} that constructs a named \code{list} of arguments for the \code{algorithm} function, given the \code{iteration} row, \code{datasets} and \code{verbose}. Additional arguments in \code{...} are passed to \code{constructor}.}
+\item{.constructor, ...}{A \code{.constructor} \code{function} that constructs a named \code{list} of arguments for the \code{.algorithm} function, given the \code{.iteration} row, \code{.datasets} and \code{.verbose}. Additional arguments in \code{...} are passed to \code{.constructor}.}
 
-\item{algorithm}{A \code{function} applied to each row of \code{iteration}, via \code{\link{workflow}}.}
+\item{.algorithm}{A \code{function} applied to each row of \code{.iteration}, via \code{\link{workflow}}.}
 
-\item{write}{A \code{function} used to create \code{iteration$file_output}, if specified. This defaults to \code{\link[qs:qsave]{qs::qsave()}}. For pointers (e.g., \code{\link[terra:SpatRaster-class]{terra::SpatRaster}}s), use specialised methods (e.g., \code{\link[terra:writeRaster]{terra::writeRaster()}}).}
+\item{.write}{A \code{function} used to create \code{.iteration$file_output}, if specified. This defaults to \code{\link[qs:qsave]{qs::qsave()}}. For pointers (e.g., \code{\link[terra:SpatRaster-class]{terra::SpatRaster}}s), use specialised methods (e.g., \code{\link[terra:writeRaster]{terra::writeRaster()}}).}
 
-\item{coffee}{\code{\link[=coffee]{coffee()}} break options.
+\item{.coffee}{\code{\link[=coffee]{coffee()}} break options.
 \itemize{
-\item Use \code{NULL} to suppress coffee breaks;
+\item Use \code{NULL} to suppress .coffee breaks;
 \item Use \code{list()} for default arguments;
 \item Use a named \code{list} of arguments, passed to \code{\link[=coffee]{coffee()}}, to customise coffee breaks;
 }}
 
-\item{cl, varlist, envir, chunk, chunk_fun}{Cluster arguments passed to \code{\link[=cl_lapply]{cl_lapply()}}. If \code{chunk_fun} is used:
+\item{.cl, .varlist, .envir, .chunk, .chunk_fun}{Cluster arguments passed to \code{\link[=cl_lapply]{cl_lapply()}}. If \code{.chunk_fun} is used:
 \itemize{
-\item \code{chunk_fun} should return a named \code{list};
-\item The outputs of \code{chunk_fun} are added as named elements to \code{datasets};
-\item The \code{constructor} uses \code{datasets}, plus \code{sim}, \code{...} and \code{verbose}, to return a named \code{list} that is evaluated via \code{algorithm};
+\item \code{.chunk_fun} should return a named \code{list};
+\item The outputs of \code{.chunk_fun} are added as named elements to \code{.datasets};
+\item The \code{.constructor} uses \code{.datasets}, plus \code{sim = iteration[i, ]}, \code{...} and \code{.verbose}, to return a named \code{list} that is evaluated via \code{.algorithm};
 }}
 
-\item{verbose}{A \code{logical} variable or a \code{string} that defines the path to a text file:
+\item{.verbose}{A \code{logical} variable or a \code{string} that defines the path to a text file:
 \itemize{
 \item \code{.verbose = FALSE} suppresses user outputs;
 \item \code{.verbose = TRUE} sends user outputs to the console;
-\item .\code{verbose = file.path("path", "to", "text", "file.txt")} sends user outputs to a \code{.txt} file;
+\item \code{.verbose = file.path("path", "to", "text", "file.txt")} sends user outputs to a \code{.txt} file;
 }}
 }
 \value{
-The function returns a \code{list}, with one element for each \code{iteration} row. \code{List} elements are controlled by \code{\link[=workflow]{workflow()}}:
+The function returns a \code{list}, with one element for each \code{.iteration} row. \code{List} elements are controlled by \code{\link[=workflow]{workflow()}}:
 \itemize{
 \item By default, \code{\link[=workflow]{workflow()}} returns a named \code{list} with two elements:
 \itemize{
-\item \code{output}: The object returned by the \code{algorithm()} function;
+\item \code{output}: The object returned by the \code{.algorithm()} function;
 \item \code{callstats}: A one-row \code{\link{data.table}} of call statistics with the following columns:
 \itemize{
-\item \code{id}: An integer that defines the row index in \code{iteration} (\code{iteration$index});
-\item \code{algorithm}: A \code{character} label for the algorithm, defined by \code{deparse(substitute(algorithm))};
-\item \code{success}: A \code{logical} variable that defines whether or not \code{algorithm} ran successfully (without errors);
+\item \code{id}: An integer that defines the row index in \code{.iteration} (\code{.iteration$index});
+\item \code{.algorithm}: A \code{character} label for the .algorithm, defined by \code{deparse(substitute(.algorithm))};
+\item \code{success}: A \code{logical} variable that defines whether or not \code{.algorithm} ran successfully (without errors);
 \item \code{error}: A \code{character} that defines error messages or \code{NA_character_} otherwise;
 \item \code{ntrial}: An \code{integer} that defines the number of trials, if relevant;
-\item \code{time}: A \code{double} that defines the time (s) of the \code{algorithm} run;
+\item \code{time}: A \code{double} that defines the time (s) of the \code{.algorithm} run;
 }
 }
-\item If \code{iteration} contains a \code{file_output} column, \code{\link[=workflow]{workflow()}} returns \code{invisible(NULL)}. Outputs are instead written to file (reducing memory demand), as:
+\item If \code{.iteration} contains a \code{file_output} column, \code{\link[=workflow]{workflow()}} returns \code{invisible(NULL)}. Outputs are instead written to file (reducing memory demand), as:
 \itemize{
 \item \code{file_output}
 \item \code{file.path(dirname(file_output), "callstats.qs")}
@@ -86,13 +86,13 @@ The function returns a \code{list}, with one element for each \code{iteration} r
 }
 }
 \description{
-This function iteratively implements a \code{\link{workflow}} based on a user-defined algorithm function.
+This function iteratively implements a \code{\link{workflow}} based on a user-defined .algorithm function.
 }
 \details{
-\code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}} iterates over rows in \code{iteration} via \code{\link[=cl_lapply]{cl_lapply()}} and applies the internal function \code{\link[=workflow]{workflow()}}. \code{\link[=workflow]{workflow()}} accepts the \code{iteration} row, \code{datasets}, \code{constructor}, \code{algorithm} and \code{verbose} arguments. Using these inputs, \code{\link[=workflow]{workflow()}}:
+\code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}} iterates over rows in \code{.iteration} via \code{\link[=cl_lapply]{cl_lapply()}} and applies the internal function \code{\link[=workflow]{workflow()}}. \code{\link[=workflow]{workflow()}} accepts the \code{.iteration} row, \code{.datasets}, \code{.constructor}, \code{.algorithm} and \code{.verbose} arguments. Using these inputs, \code{\link[=workflow]{workflow()}}:
 \itemize{
-\item Constructs a named \code{list} of arguments for an algorithm function, via a \code{constructor}, given information in the supplied arguments;
-\item Passes the arguments to the \code{algorithm} function;
+\item Constructs a named \code{list} of arguments for an .algorithm function, via a \code{.constructor}, given information in the supplied arguments;
+\item Passes the arguments to the \code{.algorithm} function;
 \item Implements error handling;
 \item Records outputs and call statistics (such as computation time);
 \item Optionally writes outputs to disk or returns them in memory;
@@ -134,14 +134,14 @@ w <-
 # * Unwrap the SpatRaster on each chunk
 # * Is it incorporated into datasets
 cl_lapply_workflow(iteration, 
-                   datasets = list(), 
-                   constructor = constructor, 
-                   algorithm = algorithm, 
-                   chunk_fun = function(xi, ...) {
+                   .datasets = list(), 
+                   .constructor = constructor, 
+                   .algorithm = algorithm, 
+                   .chunk_fun = function(xi, ...) {
                      # Return a named list
                      list(x = terra::unwrap(w))
                    }, 
-                   chunk = TRUE, cl = 2L)
+                   .chunk = TRUE, .cl = 2L)
 
 # For extensive examples, see the patter.workflows package. 
 }

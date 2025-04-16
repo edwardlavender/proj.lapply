@@ -7,32 +7,32 @@
 \title{Task management}
 \usage{
 coffee(
-  nodenames = Sys.info()["nodename"],
-  folder = file.path(tempdir(), "coffee"),
-  interval = 2 * 60 * 60,
-  duration = 15 * 60
+  .nodenames = Sys.info()["nodename"],
+  .folder = file.path(tempdir(), "coffee"),
+  .interval = 2 * 60 * 60,
+  .duration = 15 * 60
 )
 
-coffee_do(args)
+coffee_do(.args)
 
-coffee_cleanup(args)
+coffee_cleanup(.args)
 }
 \arguments{
-\item{nodenames}{A \code{character} vector that defines the name(s) of the nodes on which to take coffee breaks.}
+\item{.nodenames}{A \code{character} vector that defines the name(s) of the nodes on which to take coffee breaks.}
 
-\item{folder}{A \code{character} that defines the folder in which coffee break times are stored. This is created, recursively, if required.}
+\item{.folder}{A \code{character} that defines the folder in which coffee break times are stored. This is created, recursively, if required.}
 
-\item{interval}{A \code{number} that defines the minimum time interval (s) between sequential coffee breaks.}
+\item{.interval}{A \code{number} that defines the minimum time interval (s) between sequential coffee breaks.}
 
-\item{duration}{A \code{number} that defines the duration (s) of the coffee break.}
+\item{.duration}{A \code{number} that defines the duration (s) of the coffee break.}
 
-\item{args}{\code{NULL}, \code{list()} or a named \code{list} of arguments used to implement \code{\link[=coffee]{coffee()}}.}
+\item{.args}{\code{NULL}, \code{list()} or a named \code{list} of arguments used to implement \code{\link[=coffee]{coffee()}}.}
 }
 \value{
 All functions return \code{invisible(NULL)}.
 \itemize{
-\item \code{\link[=coffee]{coffee()}} and \code{\link[=coffee_do]{coffee_do()}} create \code{folder} and \code{time.qs} files as side effects.
-\item \code{\link[=coffee_cleanup]{coffee_cleanup()}} unlinks \code{folder} as a side effect.
+\item \code{\link[=coffee]{coffee()}} and \code{\link[=coffee_do]{coffee_do()}} create \code{.folder} and \code{time.qs} files as side effects.
+\item \code{\link[=coffee_cleanup]{coffee_cleanup()}} unlinks \code{.folder} as a side effect.
 }
 }
 \description{
@@ -42,12 +42,12 @@ Give your computer 'coffee breaks' during iterative activities for rest.
 \itemize{
 \item \code{\link[=coffee]{coffee()}} is designed to be called in iterative applications (i.e., loops).
 \itemize{
-\item For machines (\code{Sys.info()["nodename"]}) in \code{nodenames}, the function looks up the time since the last coffee break.
-\item If the time since the last break exceeds \code{interval}, the machine sleeps for \code{duration} seconds.
-\item After the break, the function records the system time in a \code{time.qs} file written to \code{folder}.
+\item For machines (\code{Sys.info()["nodename"]}) in \code{.nodenames}, the function looks up the time since the last coffee break.
+\item If the time since the last break exceeds \code{.interval}, the machine sleeps for \code{duration} seconds.
+\item After the break, the function records the system time in a \code{time.qs} file written to \code{.folder}.
 }
-\item Use \code{\link[=coffee_do]{coffee_do()}} to run \code{\link[=coffee]{coffee()}} given \code{args}.
-\item Use \code{\link[=coffee_cleanup]{coffee_cleanup()}} after all iterations to \code{unlink(folder)}.
+\item Use \code{\link[=coffee_do]{coffee_do()}} to run \code{\link[=coffee]{coffee()}} given \code{.args}.
+\item Use \code{\link[=coffee_cleanup]{coffee_cleanup()}} after all iterations to \code{unlink(.folder)}.
 }
 }
 \author{

@@ -1,6 +1,6 @@
 #' @title Iterative workflows
 #' @description This function iteratively implements a [`workflow`] based on a user-defined .algorithm function.
-#' @param .iteration An .iteration [`data.table`]. 
+#' @param .iteration An .iteration [`data.table::data.table`]. 
 #' * Each row corresponds to one .algorithm run and is passed to `.constructor()`.
 #' * Required columns depend on the `.constructor()` function but generally include:
 #'    - `index`: a unique identifier for each row;
@@ -36,7 +36,7 @@
 
 #' * By default, [`workflow()`] returns a named `list` with two elements:
 #'    * `output`: The object returned by the `.algorithm()` function;
-#'    * `callstats`: A one-row [`data.table`] of call statistics with the following columns:
+#'    * `callstats`: A one-row [`data.table::data.table`] of call statistics with the following columns:
 #'        * `id`: An integer that defines the row index in `.iteration` (`.iteration$index`);
 #'        * `.algorithm`: A `character` label for the .algorithm, defined by `deparse(substitute(.algorithm))`;
 #'        * `success`: A `logical` variable that defines whether or not `.algorithm` ran successfully (without errors);

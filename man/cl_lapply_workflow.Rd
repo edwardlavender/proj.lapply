@@ -21,7 +21,7 @@ cl_lapply_workflow(
 )
 }
 \arguments{
-\item{.iteration}{An .iteration \code{\link{data.table}}.
+\item{.iteration}{An .iteration \code{\link[data.table:data.table]{data.table::data.table}}.
 \itemize{
 \item Each row corresponds to one .algorithm run and is passed to \code{.constructor()}.
 \item Required columns depend on the \code{.constructor()} function but generally include:
@@ -68,7 +68,7 @@ The function returns a \code{list}, with one element for each \code{.iteration} 
 \item By default, \code{\link[=workflow]{workflow()}} returns a named \code{list} with two elements:
 \itemize{
 \item \code{output}: The object returned by the \code{.algorithm()} function;
-\item \code{callstats}: A one-row \code{\link{data.table}} of call statistics with the following columns:
+\item \code{callstats}: A one-row \code{\link[data.table:data.table]{data.table::data.table}} of call statistics with the following columns:
 \itemize{
 \item \code{id}: An integer that defines the row index in \code{.iteration} (\code{.iteration$index});
 \item \code{.algorithm}: A \code{character} label for the .algorithm, defined by \code{deparse(substitute(.algorithm))};

@@ -16,7 +16,7 @@ workflow(
 )
 }
 \arguments{
-\item{.sim, .datasets, .constructor, .algorithm, .write, .coffee}{Arguments directly inherited from \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}}. \code{sim} is the \code{iteration} \code{\link{data.table}} row.}
+\item{.sim, .datasets, .constructor, .algorithm, .write, .coffee}{Arguments directly inherited from \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}}. \code{sim} is the \code{iteration} \code{\link[data.table:data.table]{data.table::data.table}} row.}
 
 \item{.verbose}{A \code{logical} variable that defines whether or not to send user outputs to the console or a \code{.txt} file.}
 }

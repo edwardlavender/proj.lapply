@@ -1,6 +1,6 @@
 #' @title Workflows
 #' @description This internal function is the workhorse of [`cl_lapply_workflow()`]. The function wraps an `algorithm` function.
-#' @param .sim,.datasets,.constructor,.algorithm,.write,.coffee Arguments directly inherited from [`cl_lapply_workflow()`]. `sim` is the `iteration` [`data.table`] row.
+#' @param .sim,.datasets,.constructor,.algorithm,.write,.coffee Arguments directly inherited from [`cl_lapply_workflow()`]. `sim` is the `iteration` [`data.table::data.table`] row.
 #' @param .verbose A `logical` variable that defines whether or not to send user outputs to the console or a `.txt` file. 
 #' @details For details, see the wrapper function [`cl_lapply_workflow()`].
 #' @author Edward Lavender

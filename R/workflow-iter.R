@@ -20,7 +20,9 @@
 #' * `.chunk_fun` should return a named `list`;
 #' * The outputs of `.chunk_fun` are added as named elements to `.datasets`;
 #' * The `.constructor` uses `.datasets`, plus `sim = iteration[i, ]`, `...` and `.verbose`, to return a named `list` that is evaluated via `.algorithm`;
-#' @param .config (optional) A `function(.cl = cl_cores(.cl))` that controls additional node configuration options. For example, in code that uses `JuliaCall`, it is necessary to setup `Julia` on each socket. 
+#' @param .startup,.cleanup (optional) `Function`s called before and after each [`workflow`] for setup or cleanup. Each function should have the signature `function(.sim, .cl)`, where `.cl` defines the number of cores used. 
+#' * An example use for `.startup` is code that uses `JuliaCall`, which requires setup on each socket. 
+#' * An example use for `.cleanup` is the removal of temporary files created by `.algorithm`.
 #' @param .verbose A `logical` variable or a `string` that defines the path to a text file:
 #' * `.verbose = FALSE` suppresses user outputs;
 #' * `.verbose = TRUE` sends user outputs to the console;
@@ -66,7 +68,8 @@ cl_lapply_workflow <- function(.iteration,
                                .write = qs::qsave,
                                .coffee = NULL,
                                .cl = NULL, .varlist = NULL, .envir = .GlobalEnv,
-                               .chunk = FALSE, .chunk_fun = NULL, .config = NULL,
+                               .chunk = FALSE, .chunk_fun = NULL,
+                               .startup = NULL, .cleanup = NULL,
                                .verbose = TRUE) {
   
   #### User output control
@@ -101,9 +104,9 @@ cl_lapply_workflow <- function(.iteration,
   iteration_ls <- split(.iteration, seq_len(nrow(.iteration)))
   out <- cl_lapply(.x = iteration_ls, 
                    .fun = function(.sim, .chunkargs = NULL) {
-                     # Parallel configuration
-                     if (!is.null(.config)) {
-                       .config(.cl = cl_cores(.cl))
+                     # Startup configuration
+                     if (!is.null(.startup)) {
+                       .startup(.sim = .sim, .cl = cl_cores(.cl))
                      }
                      # Handle .chunkargs
                      if (any(length(.datasets) > 0L & !is.null(.chunkargs))) {
@@ -119,6 +122,11 @@ cl_lapply_workflow <- function(.iteration,
                               .write       = .write,
                               .coffee      = .coffee,
                               .verbose     = .verbose)
+                     # Cleanup
+                     # * E.g., delete temporary files created by workflow .algorithm
+                     if (!is.null(.cleanup)) {
+                       .cleanup(.sim = .sim, .cl = cl_cores(.cl))
+                     }
                    }, 
                    .cl = .cl, .varlist = .varlist, .envir = .envir, 
                    .chunk = .chunk, .chunk_fun = .chunk_fun)

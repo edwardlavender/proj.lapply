@@ -19,7 +19,8 @@ cl_lapply_workflow(
   .envir = .GlobalEnv,
   .chunk = FALSE,
   .chunk_fun = NULL,
-  .config = NULL,
+  .startup = NULL,
+  .cleanup = NULL,
   .verbose = TRUE
 )
 }
@@ -60,7 +61,11 @@ cl_lapply_workflow(
 \item The \code{.constructor} uses \code{.datasets}, plus \code{sim = iteration[i, ]}, \code{...} and \code{.verbose}, to return a named \code{list} that is evaluated via \code{.algorithm};
 }}
 
-\item{.config}{(optional) A \verb{function(.cl = cl_cores(.cl))} that controls additional node configuration options. For example, in code that uses \code{JuliaCall}, it is necessary to setup \code{Julia} on each socket.}
+\item{.startup, .cleanup}{(optional) \code{Function}s called before and after each \code{\link{workflow}} for setup or cleanup. Each function should have the signature \verb{function(.sim, .cl)}, where \code{.cl} defines the number of cores used.
+\itemize{
+\item An example use for \code{.startup} is code that uses \code{JuliaCall}, which requires setup on each socket.
+\item An example use for \code{.cleanup} is the removal of temporary files created by \code{.algorithm}.
+}}
 
 \item{.verbose}{A \code{logical} variable or a \code{string} that defines the path to a text file:
 \itemize{

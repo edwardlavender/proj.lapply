@@ -10,6 +10,7 @@
 #' @param .datasets (optional) A named `list` of .datasets, passed to `.constructor()`. 
 #' @param .constructor,... A `.constructor` `function` that constructs a named `list` of arguments for the `.algorithm` function, given the `.iteration` row, `.datasets` and `.verbose`. Additional arguments in `...` are passed to `.constructor`.
 #' @param .algorithm A `function` applied to each row of `.iteration`, via [`workflow`].
+#' @param .trials,.success `Function`s, applied to the output of `.algorithm`, to record `ntrial` and `success` (see Value). 
 #' @param .write A `function` used to create `.iteration$file_output`, if specified. This defaults to [`qs::qsave()`]. For pointers (e.g., [`terra::SpatRaster`]s), use specialised methods (e.g., [`terra::writeRaster()`]).
 #' @param .coffee [`coffee()`] break options. 
 #' * Use `NULL` to suppress .coffee breaks;
@@ -60,6 +61,8 @@ cl_lapply_workflow <- function(.iteration,
                                .datasets, 
                                .constructor, ...,
                                .algorithm, 
+                               .trials = function(x) NA_integer_,
+                               .success = function(x) TRUE,
                                .write = qs::qsave,
                                .coffee = NULL,
                                .cl = NULL, .varlist = NULL, .envir = .GlobalEnv,
@@ -111,6 +114,8 @@ cl_lapply_workflow <- function(.iteration,
                               .datasets    = .datasets, 
                               .constructor = .constructor, ..., 
                               .algorithm   = .algorithm, 
+                              .trials      = .trials,
+                              .success     = .success,
                               .write       = .write,
                               .coffee      = .coffee,
                               .verbose     = .verbose)

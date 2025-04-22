@@ -10,6 +10,8 @@ cl_lapply_workflow(
   .constructor,
   ...,
   .algorithm,
+  .trials = function(x) NA_integer_,
+  .success = function(x) TRUE,
   .write = qs::qsave,
   .coffee = NULL,
   .cl = NULL,
@@ -39,6 +41,8 @@ cl_lapply_workflow(
 \item{.constructor, ...}{A \code{.constructor} \code{function} that constructs a named \code{list} of arguments for the \code{.algorithm} function, given the \code{.iteration} row, \code{.datasets} and \code{.verbose}. Additional arguments in \code{...} are passed to \code{.constructor}.}
 
 \item{.algorithm}{A \code{function} applied to each row of \code{.iteration}, via \code{\link{workflow}}.}
+
+\item{.trials, .success}{\code{Function}s, applied to the output of \code{.algorithm}, to record \code{ntrial} and \code{success} (see Value).}
 
 \item{.write}{A \code{function} used to create \code{.iteration$file_output}, if specified. This defaults to \code{\link[qs:qsave]{qs::qsave()}}. For pointers (e.g., \code{\link[terra:SpatRaster-class]{terra::SpatRaster}}s), use specialised methods (e.g., \code{\link[terra:writeRaster]{terra::writeRaster()}}).}
 

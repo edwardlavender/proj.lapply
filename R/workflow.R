@@ -1,6 +1,6 @@
 #' @title Workflows
 #' @description This internal function is the workhorse of [`cl_lapply_workflow()`]. The function wraps an `algorithm` function.
-#' @param .sim,.datasets,.constructor,.algorithm,.write,.coffee Arguments directly inherited from [`cl_lapply_workflow()`]. `sim` is the `iteration` [`data.table::data.table`] row.
+#' @param .sim,.datasets,.constructor,.algorithm,.trials,.success,.write,.coffee Arguments directly inherited from [`cl_lapply_workflow()`]. `sim` is the `iteration` [`data.table::data.table`] row.
 #' @param .verbose A `logical` variable that defines whether or not to send user outputs to the console or a `.txt` file. 
 #' @details For details, see the wrapper function [`cl_lapply_workflow()`].
 #' @author Edward Lavender
@@ -8,7 +8,8 @@
 #' @keywords internal
 
 workflow <- function(.sim, .datasets, .constructor, ..., 
-                     .algorithm, .write, .coffee, .verbose) {
+                     .algorithm, .trials, .success, 
+                     .write, .coffee, .verbose) {
   
   # Initialise
   coffee_do(.coffee)
@@ -20,7 +21,6 @@ workflow <- function(.sim, .datasets, .constructor, ...,
                            .verbose = .verbose, ...)
   
   # Run algorithm
-  error   <- NA_character_
   success <- TRUE
   t1      <- Sys.time()
   pout    <- tryCatch(do.call(.algorithm, args), error = function(e) e)
@@ -28,22 +28,23 @@ workflow <- function(.sim, .datasets, .constructor, ...,
   
   # Handle errors
   if (inherits(pout, "error")) {
+    trials  <- NA_integer_
     success <- FALSE
     error   <- pout$message
     message(error)
   } else {
-    time <- secs(t2, t1)
+    trials  <- .trials(pout)
+    success <- .success(pout)
+    error   <- NA_character_
   }
+  time <- secs(t2, t1)
   
   # Collect success statistics
-  # * TO DO
-  # * ntrial = NA_integer_
-  # * success = TRUE even if the algorithm did not converge (in the case of a particle algorithm);
   dout <- data.table(id        = .sim$index, 
                      algorithm = deparse(substitute(algorithm)), 
+                     ntrial    = trials,
                      success   = success, 
                      error     = error, 
-                     ntrial    = NA_integer_,
                      time      = time)
   
   # (optional) Write outputs

@@ -19,6 +19,7 @@
 #' * `.chunk_fun` should return a named `list`;
 #' * The outputs of `.chunk_fun` are added as named elements to `.datasets`;
 #' * The `.constructor` uses `.datasets`, plus `sim = iteration[i, ]`, `...` and `.verbose`, to return a named `list` that is evaluated via `.algorithm`;
+#' @param .config (optional) A `function(.cl = cl_cores(.cl))` that controls additional node configuration options. For example, in code that uses `JuliaCall`, it is necessary to setup `Julia` on each socket. 
 #' @param .verbose A `logical` variable or a `string` that defines the path to a text file:
 #' * `.verbose = FALSE` suppresses user outputs;
 #' * `.verbose = TRUE` sends user outputs to the console;
@@ -62,7 +63,7 @@ cl_lapply_workflow <- function(.iteration,
                                .write = qs::qsave,
                                .coffee = NULL,
                                .cl = NULL, .varlist = NULL, .envir = .GlobalEnv,
-                               .chunk = FALSE, .chunk_fun = NULL,
+                               .chunk = FALSE, .chunk_fun = NULL, .config = NULL,
                                .verbose = TRUE) {
   
   #### User output control
@@ -97,9 +98,15 @@ cl_lapply_workflow <- function(.iteration,
   iteration_ls <- split(.iteration, seq_len(nrow(.iteration)))
   out <- cl_lapply(.x = iteration_ls, 
                    .fun = function(.sim, .chunkargs = NULL) {
+                     # Parallel configuration
+                     if (!is.null(.config)) {
+                       .config(.cl = cl_cores(.cl))
+                     }
+                     # Handle .chunkargs
                      if (any(length(.datasets) > 0L & !is.null(.chunkargs))) {
                        .datasets <- list_merge(.datasets, .chunkargs)
                      }
+                     # Run workflow 
                      workflow(.sim         = .sim, 
                               .datasets    = .datasets, 
                               .constructor = .constructor, ..., 

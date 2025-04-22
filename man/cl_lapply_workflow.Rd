@@ -17,6 +17,7 @@ cl_lapply_workflow(
   .envir = .GlobalEnv,
   .chunk = FALSE,
   .chunk_fun = NULL,
+  .config = NULL,
   .verbose = TRUE
 )
 }
@@ -54,6 +55,8 @@ cl_lapply_workflow(
 \item The outputs of \code{.chunk_fun} are added as named elements to \code{.datasets};
 \item The \code{.constructor} uses \code{.datasets}, plus \code{sim = iteration[i, ]}, \code{...} and \code{.verbose}, to return a named \code{list} that is evaluated via \code{.algorithm};
 }}
+
+\item{.config}{(optional) A \verb{function(.cl = cl_cores(.cl))} that controls additional node configuration options. For example, in code that uses \code{JuliaCall}, it is necessary to setup \code{Julia} on each socket.}
 
 \item{.verbose}{A \code{logical} variable or a \code{string} that defines the path to a text file:
 \itemize{

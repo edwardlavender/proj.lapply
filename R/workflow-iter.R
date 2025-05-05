@@ -1,5 +1,5 @@
 #' @title Iterative workflows
-#' @description This function iteratively implements a [`workflow`] based on a user-defined .algorithm function.
+#' @description This function iteratively implements a [`workflow`] based on a user-defined `.algorithm` function.
 #' @param .iteration An .iteration [`data.table::data.table`]. 
 #' * Each row corresponds to one .algorithm run and is passed to `.constructor()`.
 #' * Required columns depend on the `.constructor()` function but generally include:
@@ -21,8 +21,6 @@
 #' * The outputs of `.chunk_fun` are added as named elements to `.datasets`;
 #' * The `.constructor` uses `.datasets`, plus `sim = iteration[i, ]`, `...` and `.verbose`, to return a named `list` that is evaluated via `.algorithm`;
 #' @param .startup,.cleanup (optional) `Function`s called before and after each [`workflow`] for setup or cleanup. Each function should have the signature `function(.sim, .cl)`, where `.cl` defines the number of cores used. 
-#' * An example use for `.startup` is code that uses `JuliaCall`, which requires setup on each socket. 
-#' * An example use for `.cleanup` is the removal of temporary files created by `.algorithm`.
 #' @param .verbose A `logical` variable or a `string` that defines the path to a text file:
 #' * `.verbose = FALSE` suppresses user outputs;
 #' * `.verbose = TRUE` sends user outputs to the console;
@@ -42,8 +40,8 @@
 #'    * `output`: The object returned by the `.algorithm()` function;
 #'    * `callstats`: A one-row [`data.table::data.table`] of call statistics with the following columns:
 #'        * `id`: An integer that defines the row index in `.iteration` (`.iteration$index`);
-#'        * `.algorithm`: A `character` label for the .algorithm, defined by `deparse(substitute(.algorithm))`;
-#'        * `success`: A `logical` variable that defines whether or not `.algorithm` ran successfully (without errors);
+#'        * `algorithm`: A `character` label for the .algorithm, defined by `deparse(substitute(.algorithm))`;
+#'        * `success`: A `logical` variable that defines whether or not `.algorithm` ran successfully;
 #'        * `error`: A `character` that defines error messages or `NA_character_` otherwise;
 #'        * `ntrial`: An `integer` that defines the number of trials, if relevant; 
 #'        * `time`: A `double` that defines the time (s) of the `.algorithm` run;

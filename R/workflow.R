@@ -41,16 +41,17 @@ workflow <- function(.sim, .datasets, .constructor, ...,
   
   # Collect success statistics
   dout <- data.table(id        = .sim$index, 
-                     algorithm = deparse(substitute(algorithm)), 
+                     algorithm = deparse(substitute(.algorithm)), 
                      ntrial    = trials,
                      success   = success, 
                      error     = error, 
                      time      = time)
   
   # (optional) Write outputs
+  # If .sim$file_output is specified, we write outputs if !is.na(error) _even if_ success = FALSE
   do_write <- rlang::has_name(.sim, "file_output")
   if (do_write) {
-    if (success) {
+    if (is.na(error)) {
       .write(pout, .sim$file_output)
     }
     qs::qsave(dout, file.path(dirname(.sim$file_output), "callstats.qs"))

@@ -61,11 +61,7 @@ cl_lapply_workflow(
 \item The \code{.constructor} uses \code{.datasets}, plus \code{sim = iteration[i, ]}, \code{...} and \code{.verbose}, to return a named \code{list} that is evaluated via \code{.algorithm};
 }}
 
-\item{.startup, .cleanup}{(optional) \code{Function}s called before and after each \code{\link{workflow}} for setup or cleanup. Each function should have the signature \verb{function(.sim, .cl)}, where \code{.cl} defines the number of cores used.
-\itemize{
-\item An example use for \code{.startup} is code that uses \code{JuliaCall}, which requires setup on each socket.
-\item An example use for \code{.cleanup} is the removal of temporary files created by \code{.algorithm}.
-}}
+\item{.startup, .cleanup}{(optional) \code{Function}s called before and after each \code{\link{workflow}} for setup or cleanup. Each function should have the signature \verb{function(.sim, .cl)}, where \code{.cl} defines the number of cores used.}
 
 \item{.verbose}{A \code{logical} variable or a \code{string} that defines the path to a text file:
 \itemize{
@@ -83,8 +79,8 @@ The function returns a \code{list}, with one element for each \code{.iteration} 
 \item \code{callstats}: A one-row \code{\link[data.table:data.table]{data.table::data.table}} of call statistics with the following columns:
 \itemize{
 \item \code{id}: An integer that defines the row index in \code{.iteration} (\code{.iteration$index});
-\item \code{.algorithm}: A \code{character} label for the .algorithm, defined by \code{deparse(substitute(.algorithm))};
-\item \code{success}: A \code{logical} variable that defines whether or not \code{.algorithm} ran successfully (without errors);
+\item \code{algorithm}: A \code{character} label for the .algorithm, defined by \code{deparse(substitute(.algorithm))};
+\item \code{success}: A \code{logical} variable that defines whether or not \code{.algorithm} ran successfully;
 \item \code{error}: A \code{character} that defines error messages or \code{NA_character_} otherwise;
 \item \code{ntrial}: An \code{integer} that defines the number of trials, if relevant;
 \item \code{time}: A \code{double} that defines the time (s) of the \code{.algorithm} run;
@@ -98,7 +94,7 @@ The function returns a \code{list}, with one element for each \code{.iteration} 
 }
 }
 \description{
-This function iteratively implements a \code{\link{workflow}} based on a user-defined .algorithm function.
+This function iteratively implements a \code{\link{workflow}} based on a user-defined \code{.algorithm} function.
 }
 \details{
 \code{\link[=cl_lapply_workflow]{cl_lapply_workflow()}} iterates over rows in \code{.iteration} via \code{\link[=cl_lapply]{cl_lapply()}} and applies the internal function \code{\link[=workflow]{workflow()}}. \code{\link[=workflow]{workflow()}} accepts the \code{.iteration} row, \code{.datasets}, \code{.constructor}, \code{.algorithm} and \code{.verbose} arguments. Using these inputs, \code{\link[=workflow]{workflow()}}:
